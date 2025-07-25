@@ -1,0 +1,53 @@
+name: Deploy Portfolio API
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'portfolio-api/**'
+      - '.github/workflows/deploy-portfolio-api.yml'
+
+env:
+  IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/portfolio-api
+  IMAGE_TAG: ${{ github.sha }}
+  RELEASE_NAME: portfolio-api-${{ github.sha }}
+  NAMESPACE: devincooper
+  JOB_NAME: portfolio-api-job
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build and push Docker image
+        run: |
+          cd portfolio-api
+          docker build -t $IMAGE_NAME:$IMAGE_TAG .
+          docker push $IMAGE_NAME:$IMAGE_TAG
+
+      - name: Set up Kubeconfig
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBECONFIG }}" | base64 -d > ~/.kube/config
+
+      - name: Deploy via Helm
+        run: |
+          cd ~/helm-values/charts/portfolio-api
+          helm upgrade --install $RELEASE_NAME . \
+            --namespace $NAMESPACE \
+            --create-namespace \
+            --set image.repository=$IMAGE_NAME \
+            --set image.tag=$IMAGE_TAG \
+            --set apiKeySecretName=portfolio-api-secret \
+            --atomic --wait

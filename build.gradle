@@ -35,3 +35,11 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+test {
+	jvmArgs += "--enable-preview"
+}
+
+bootJar {
+	archiveFileName = 'portfolio-api.jar'
+}
