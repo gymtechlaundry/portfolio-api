@@ -11,7 +11,7 @@ on:
 env:
   IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/portfolio-api
   IMAGE_TAG: ${{ github.sha }}
-  RELEASE_NAME: portfolio-api-${{ github.sha }}
+  RELEASE_NAME: portfolio-api
   NAMESPACE: devincooper
 
 jobs:
