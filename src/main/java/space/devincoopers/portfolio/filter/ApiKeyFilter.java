@@ -10,6 +10,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+@Component
 public class ApiKeyFilter extends OncePerRequestFilter {
 
     @Value("${portfolio.api-key}")
