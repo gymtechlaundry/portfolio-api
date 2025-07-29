@@ -45,18 +45,18 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
-                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/login").permitAll()
                         .requestMatchers("/api/projects/**").permitAll()
-                        .anyRequest().authenticated()
-                );
+                        .anyRequest().authenticated())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler));
+
+        http.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
 
         http.addFilterBefore(apiKeyFilter, UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);
