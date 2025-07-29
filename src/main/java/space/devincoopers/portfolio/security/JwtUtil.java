@@ -19,7 +19,7 @@ import java.util.List;
 public class JwtUtil {
     private static final Logger logger = LoggerFactory.getLogger(JwtUtil.class);
 
-    @Value("${jwt.secret}")
+    @Value("${jwt.secret:${JWT_SECRET}}")
     private String secret;
 
     private Key key;
