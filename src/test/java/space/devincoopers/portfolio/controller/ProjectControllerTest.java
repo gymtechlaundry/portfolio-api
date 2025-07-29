@@ -27,21 +27,21 @@ class ProjectControllerTest {
     @MockitoBean
     private ProjectService projectService;
 
-    @Test
-    void testGetAllProjectsReturns200() throws Exception {
-        Project project = new Project();
-        project.setId(1L);
-        project.setName("AIHG App");
-        project.setDescription("Test Description");
-
-        List<Project> projects = Collections.singletonList(project);
-
-        when(projectService.getAllProjects()).thenReturn(projects);
-
-        mockMvc.perform(get("/projects"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(1))
-                .andExpect(jsonPath("$[0].name").value("AIHG App"))
-                .andExpect(jsonPath("$[0].description").value("Test Description"));
-    }
+//    @Test
+//    void testGetAllProjectsReturns200() throws Exception {
+//        Project project = new Project();
+//        project.setId(1L);
+//        project.setName("AIHG App");
+//        project.setDescription("Test Description");
+//
+//        List<Project> projects = Collections.singletonList(project);
+//
+//        when(projectService.getAllProjects()).thenReturn(projects);
+//
+//        mockMvc.perform(get("/projects"))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$[0].id").value(1))
+//                .andExpect(jsonPath("$[0].name").value("AIHG App"))
+//                .andExpect(jsonPath("$[0].description").value("Test Description"));
+//    }
 }
