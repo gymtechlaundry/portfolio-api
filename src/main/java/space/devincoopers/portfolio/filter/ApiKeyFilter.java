@@ -4,6 +4,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -13,7 +15,9 @@ import java.io.IOException;
 @Component
 public class ApiKeyFilter extends OncePerRequestFilter {
 
-    @Value("${portfolio.api-key}")
+    private static final Logger logger = LoggerFactory.getLogger(ApiKeyFilter.class);
+
+    @Value("devincoopers-portfolio")
     private String apiKey;
 
     @Override
@@ -22,7 +26,7 @@ public class ApiKeyFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
         String header = request.getHeader("x-api-key");
-
+        logger.debug("This is the header coming from Angular: {}",header);
         if (apiKey.equals(header)) {
             filterChain.doFilter(request, response);
         } else {

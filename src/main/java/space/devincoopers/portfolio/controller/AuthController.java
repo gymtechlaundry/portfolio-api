@@ -1,5 +1,7 @@
 package space.devincoopers.portfolio.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,11 +23,12 @@ import space.devincoopers.portfolio.security.LoginResponse;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
+
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -50,13 +53,13 @@ public class AuthController {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
         String jwtToken = jwtUtil.generateTokenFromUsername(userDetails);
-
+        logger.debug("This is the jwt being sent back in the response: {}", jwtToken);
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .toList();
 
         LoginResponse loginResponse = new LoginResponse(jwtToken, userDetails.getUsername(), roles);
-
+        System.out.println("This is the jwt" + loginResponse.getJwtToken());
         return ResponseEntity.ok(loginResponse);
     }
 }
