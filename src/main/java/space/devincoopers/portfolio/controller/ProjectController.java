@@ -1,10 +1,13 @@
 package space.devincoopers.portfolio.controller;
 
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import space.devincoopers.portfolio.client.CdnServiceClient;
 import space.devincoopers.portfolio.model.Project;
 import space.devincoopers.portfolio.service.ProjectService;
 
@@ -14,7 +17,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/projects")
 public class ProjectController {
+
     private final ProjectService projectService;
+    private final ObjectMapper objectMapper;
 
     @GetMapping
     public List<Project> getAllProjects() {
@@ -27,17 +32,36 @@ public class ProjectController {
         return project != null ? ResponseEntity.ok(project) : ResponseEntity.notFound().build();
     }
 
-    @PostMapping
+    @PutMapping(consumes = "multipart/form-data")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> createProject(@RequestBody Project project) {
-        projectService.insertProject(project);
+    public ResponseEntity<Void> updateProject(
+            @RequestPart("project") String projectJson,
+            @RequestPart("icon") MultipartFile icon,
+            @RequestPart("screenshots") MultipartFile[] screenshots) throws IOException {
+
+        Project project = objectMapper.readValue(projectJson, Project.class);
+
+        projectService.updateProjectWithUploads(project, icon, screenshots);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping(consumes = "multipart/form-data")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> createProject(
+            @RequestPart("project") String projectJson,
+            @RequestPart("icon")MultipartFile icon,
+            @RequestPart("screenshots") MultipartFile[] screenshots) throws IOException {
+
+        Project project = objectMapper.readValue(projectJson, Project.class);
+
+        projectService.createProjectWithUploads(project, icon, screenshots);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteProject(@PathVariable Long id) {
-        projectService.deleteProjectById(id);
+        projectService.deleteProjectWithAssets(id);
         return ResponseEntity.noContent().build();
     }
 }

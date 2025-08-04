@@ -24,11 +24,23 @@ public interface PortfolioMapper {
     @ResultMap("ProjectResultMap")
     Project getProjectById(Long id);
 
-    @Delete("DELETE FROM project WHERE id = #{id}")
-    void deleteProjectById(Long id);
+    @Update("UPDATE project set " +
+    "name = #{name}. " +
+    "icon = #{icon} " +
+    "description = #{description} " +
+    "android_link = #{androidLink} " +
+    "ios_link = #{iosLink} " +
+    "website = #{website} " +
+    "github = #{github} " +
+    "screenshots = #{screenshots, typeHandler=space.devincoopers.portfolio.util.ScreenshotListHandler} " +
+    "WHERE id = #{id}")
+    void updateProject(Project project);
 
     @Insert("INSERT INTO project (name, icon, description, android_link, ios_link, website, github, screenshots) " +
             "VALUES (#{name}, #{icon}, #{description}, #{androidLink}, #{iosLink}, #{website}, #{github}, #{screenshots, typeHandler=space.devincoopers.portfolio.util.ScreenshotListHandler})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     void insertProject(Project project);
+
+    @Delete("DELETE FROM project WHERE id = #{id}")
+    void deleteProjectById(Long id);
 }

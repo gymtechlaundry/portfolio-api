@@ -2,6 +2,8 @@ package space.devincoopers.portfolio.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import space.devincoopers.portfolio.client.CdnServiceClient;
+import space.devincoopers.portfolio.client.CdnServiceClientImpl;
 import space.devincoopers.portfolio.mapper.PortfolioMapper;
 import space.devincoopers.portfolio.model.Project;
 
@@ -16,11 +18,12 @@ class ProjectServiceTest {
 
     private PortfolioMapper portfolioMapper;
     private ProjectService projectService;
+    private CdnServiceClientImpl cdnServiceClient;
 
     @BeforeEach
     void setup() {
         portfolioMapper = mock(PortfolioMapper.class);
-        projectService = new ProjectService(portfolioMapper);
+        projectService = new ProjectService(portfolioMapper, cdnServiceClient);
     }
 
     @Test
