@@ -1,6 +1,5 @@
 package space.devincoopers.portfolio.security;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -8,12 +7,13 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import space.devincoopers.portfolio.config.CorsProperties;
 import space.devincoopers.portfolio.filter.ApiKeyFilter;
 import space.devincoopers.portfolio.filter.AuthTokenFilter;
 
@@ -24,17 +24,19 @@ import java.util.List;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    @Value("#{'${cors.allowed-origins}'.split(',')}")
-    private String[] allowedOrigins;
-
     private final AuthEntryPointJwt unauthorizedHandler;
     private final ApiKeyFilter apiKeyFilter;
     private final AuthTokenFilter authTokenFilter;
+    private final CorsProperties corsProperties;
 
-    public SecurityConfig(AuthEntryPointJwt unauthorizedHandler, ApiKeyFilter apiKeyFilter, AuthTokenFilter authTokenFilter) {
+    public SecurityConfig(AuthEntryPointJwt unauthorizedHandler,
+                          ApiKeyFilter apiKeyFilter,
+                          AuthTokenFilter authTokenFilter,
+                          CorsProperties corsProperties) {
         this.unauthorizedHandler = unauthorizedHandler;
         this.apiKeyFilter = apiKeyFilter;
         this.authTokenFilter = authTokenFilter;
+        this.corsProperties = corsProperties;
     }
 
     @Bean
@@ -64,7 +66,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of(allowedOrigins));
+        config.setAllowedOrigins(corsProperties.getAllowedOrigins());
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
