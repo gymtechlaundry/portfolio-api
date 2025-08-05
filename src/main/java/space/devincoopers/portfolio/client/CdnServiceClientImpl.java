@@ -64,7 +64,7 @@ public class CdnServiceClientImpl implements CdnServiceClient {
             String deleteUrl = cdnApiUrl + "/api/images/" + appName + "/" + filename;
 
             HttpHeaders headers = new HttpHeaders();
-            headers.set("x-api-key", cdnApiKey);
+            headers.set("CDN_API_KEY", cdnApiKey);
 
             HttpEntity<Void> request = new HttpEntity<>(headers);
 
