@@ -32,7 +32,7 @@ public class CdnServiceClientImpl implements CdnServiceClient {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-        headers.set("x-api-key", cdnApiKey);
+        headers.set("CDN_API_KEY", cdnApiKey);
 
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add("file", new MultipartInputResource(file));
