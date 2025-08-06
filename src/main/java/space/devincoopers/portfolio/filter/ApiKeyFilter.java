@@ -29,6 +29,7 @@ public class ApiKeyFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            logger.debug("In the api key filter");
             filterChain.doFilter(request, response);
             return;
         }
