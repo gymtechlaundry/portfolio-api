@@ -62,12 +62,15 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/projects/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/projects/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/projects/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/projects/**").permitAll()
                         .anyRequest().authenticated()
-                );
-
-        http.addFilterBefore(apiKeyFilter, AuthTokenFilter.class);
-        http.addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);
+                )
+                // Add API key filter before UsernamePasswordAuthenticationFilter
+                .addFilterBefore(apiKeyFilter, UsernamePasswordAuthenticationFilter.class)
+                // Add Auth token filter after API key filter
+                .addFilterAfter(authTokenFilter, ApiKeyFilter.class);
 
         return http.build();
     }
