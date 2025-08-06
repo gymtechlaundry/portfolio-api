@@ -108,14 +108,16 @@ public class ProjectService {
             cdnServiceClient.deleteImage(APP_NAME, extractFilename(existing.getIcon()));
         }
 
-        if (existing.getScreenshots() != null || !existing.getScreenshots().isEmpty()) {
-            logger.error("❌ inside if existing screenshots");
-            for (String path : existing.getScreenshots()) {
+        List<String> validScreenshots = existing.getScreenshots() == null ? List.of() :
+                existing.getScreenshots().stream()
+                        .filter(s -> s != null && !s.trim().isEmpty())
+                        .toList();
+
+        if (!validScreenshots.isEmpty()) {
+            for (String path : validScreenshots) {
                 cdnServiceClient.deleteImage(APP_NAME, extractFilename(path));
             }
         }
-
-        logger.error("❌ not inside if existing screenshots");
 
         deleteProjectById(id);
     }
