@@ -40,7 +40,7 @@ public class ProjectController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> updateProject(
             @RequestPart("project") String projectJson,
-            @RequestPart("icon") MultipartFile icon,
+            @RequestPart(value = "icon", required = false) MultipartFile icon,
             @RequestPart("screenshots") MultipartFile[] screenshots) throws IOException {
 
         Project project = objectMapper.readValue(projectJson, Project.class);
