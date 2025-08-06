@@ -73,6 +73,8 @@ public class ProjectController {
         logger.debug("Did I make it in here");
         Project project = objectMapper.readValue(projectJson, Project.class);
 
+        logger.debug("What does project give me: {}", project.getAndroidLink());
+
         projectService.createProjectWithUploads(project, icon, screenshots);
         return ResponseEntity.ok().build();
     }
