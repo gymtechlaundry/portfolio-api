@@ -43,7 +43,7 @@ public class ProjectService {
     public void createProjectWithUploads(Project project, MultipartFile icon, MultipartFile[] screenshots) throws IOException {
         if (icon != null && !icon.isEmpty()) {
             String iconPath = cdnServiceClient.uploadImage(APP_NAME, icon);
-            project.setIcon("/cdn/" + iconPath);
+            project.setIcon(iconPath);
         }
 
         if (screenshots != null) {
@@ -51,7 +51,7 @@ public class ProjectService {
             for (MultipartFile file: screenshots) {
                 if (!file.isEmpty()) {
                     String path = cdnServiceClient.uploadImage(APP_NAME, file);
-                    uploadedScreenshots.add("/cdn/" + path);
+                    uploadedScreenshots.add(path);
                 }
             }
             project.setScreenshots(uploadedScreenshots);
@@ -69,7 +69,7 @@ public class ProjectService {
                 cdnServiceClient.deleteImage(APP_NAME, extractFilename(existing.getIcon()));
             }
             String iconPath = cdnServiceClient.uploadImage(APP_NAME, icon);
-            project.setIcon("/cdn/" + iconPath);
+            project.setIcon(iconPath);
         } else {
             project.setIcon(existing.getIcon());
         }
@@ -86,7 +86,7 @@ public class ProjectService {
             for (MultipartFile file : screenshots) {
                 if (!file.isEmpty()) {
                     String path = cdnServiceClient.uploadImage(APP_NAME, file);
-                    uploadedScreenshots.add("/cdn/" + path);
+                    uploadedScreenshots.add(path);
                 }
             }
             project.setScreenshots(uploadedScreenshots);
