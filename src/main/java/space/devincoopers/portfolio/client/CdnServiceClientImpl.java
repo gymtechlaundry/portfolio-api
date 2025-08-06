@@ -1,8 +1,9 @@
 package space.devincoopers.portfolio.client;
 
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -15,6 +16,8 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 public class CdnServiceClientImpl implements CdnServiceClient {
+    private static final Logger logger = LoggerFactory.getLogger(CdnServiceClientImpl.class);
+
     @Value("${cdn.public.url}")
     private String cdnPublicUrl;
 
@@ -43,6 +46,7 @@ public class CdnServiceClientImpl implements CdnServiceClient {
 
         if (response.getStatusCode().is2xxSuccessful()) {
             String relativePath = response.getBody(); // "portfolio-api/uuid-file.jpg"
+            logger.info("Response inside client: {}", relativePath);
             return cdnPublicUrl + "/" + relativePath;
         }
 
