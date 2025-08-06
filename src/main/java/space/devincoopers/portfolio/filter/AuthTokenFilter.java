@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,6 +20,7 @@ import space.devincoopers.portfolio.security.JwtUtil;
 import java.io.IOException;
 
 @Component
+@Order(1) // Runs after ApiKeyFilter
 public class AuthTokenFilter extends OncePerRequestFilter {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
@@ -38,7 +40,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         String uri = request.getRequestURI();
         logger.debug("🔍 AuthTokenFilter triggered for URI: {}", uri);
 
-        // Skip filtering for login and preflight OPTIONS requests
+        // Skip login and preflight OPTIONS
         if ("/api/auth/login".equals(uri) || "OPTIONS".equalsIgnoreCase(request.getMethod())) {
             logger.debug("⏭️ Skipping AuthTokenFilter for {}", uri);
             filterChain.doFilter(request, response);
@@ -47,7 +49,6 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
         try {
             String jwt = parseJwt(request);
-
             logger.info("Authorization Header: {}", request.getHeader("Authorization"));
             logger.info("JWT extracted: {}", jwt);
 
@@ -56,7 +57,6 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                 logger.debug("✅ Valid JWT for user: {}", username);
 
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
 
