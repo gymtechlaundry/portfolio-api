@@ -12,8 +12,8 @@ public interface PortfolioMapper {
             @Result(property = "name", column = "name"),
             @Result(property = "icon", column = "icon"),
             @Result(property = "description", column = "description"),
-            @Result(property = "androidLink", column = "androidLink"),
-            @Result(property = "iosLink", column = "iosLink"),
+            @Result(property = "androidLink", column = "android_link"),
+            @Result(property = "iosLink", column = "ios_link"),
             @Result(property = "website", column = "website"),
             @Result(property = "github", column = "github"),
             @Result(property = "screenshots", column = "screenshots", typeHandler = space.devincoopers.portfolio.util.ScreenshotListHandler.class)
