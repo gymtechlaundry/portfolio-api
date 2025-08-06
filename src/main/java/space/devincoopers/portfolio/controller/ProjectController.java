@@ -54,7 +54,7 @@ public class ProjectController {
     public ResponseEntity<Void> createProject(
             @RequestPart("project") String projectJson,
             @RequestPart(value = "icon", required = false)MultipartFile icon,
-            @RequestPart("screenshots") MultipartFile[] screenshots) throws IOException {
+            @RequestPart(value = "screenshots", required = false) MultipartFile[] screenshots) throws IOException {
 
         logger.debug("Did I make it in here");
         Project project = objectMapper.readValue(projectJson, Project.class);
