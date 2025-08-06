@@ -54,9 +54,13 @@ public class ProjectController {
     @PostMapping(consumes = "multipart/form-data")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> createProject(
-            @RequestPart("project") String projectJson,
+            @RequestPart(value = "project", required = false) String projectJson,
             @RequestPart(value = "icon", required = false)MultipartFile icon,
             @RequestPart(value = "screenshots", required = false) MultipartFile[] screenshots) throws IOException {
+
+        if (projectJson == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing required field: project");
+        }
 
         if (icon == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing required field: icon");
