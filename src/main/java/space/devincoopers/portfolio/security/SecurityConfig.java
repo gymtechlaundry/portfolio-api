@@ -66,8 +66,8 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 );
 
-        http.addFilterBefore(apiKeyFilter, UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAfter(apiKeyFilter, AuthTokenFilter.class);
 
         return http.build();
     }
