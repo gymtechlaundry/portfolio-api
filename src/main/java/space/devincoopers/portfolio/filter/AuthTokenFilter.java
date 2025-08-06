@@ -38,6 +38,13 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         String uri = request.getRequestURI();
         logger.debug("🔍 AuthTokenFilter triggered for URI: {}", uri);
 
+        // Skip filtering for login and preflight OPTIONS requests
+        if ("/api/auth/login".equals(uri) || "OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            logger.debug("⏭️ Skipping AuthTokenFilter for {}", uri);
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         try {
             String jwt = parseJwt(request);
 
