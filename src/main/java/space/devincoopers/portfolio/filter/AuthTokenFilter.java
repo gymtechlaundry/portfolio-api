@@ -55,26 +55,32 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
         try {
             String jwt = parseJwt(request);
+
             logger.info("Authorization Header: {}", request.getHeader("Authorization"));
             logger.info("JWT extracted: {}", jwt);
 
             if (jwt != null && jwtUtil.validateJwtToken(jwt)) {
+                logger.debug("✅ JWT is valid");
+
                 String username = jwtUtil.extractUsernameFromJwtToken(jwt);
-                logger.debug("✅ Valid JWT for user: {}", username);
+                logger.debug("👤 Extracted username: {}", username);
 
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
+                logger.debug("🔍 Loaded UserDetails: {}", userDetails.getUsername());
+
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+
                 logger.debug("🔐 Authentication set in security context for user: {}", username);
             } else {
-                logger.warn("⚠️ JWT token missing or invalid");
+                logger.warn("⚠️ JWT is null or failed validation.");
             }
 
         } catch (Exception e) {
-            logger.error("❌ Could not set user authentication: {}", e.getMessage(), e);
+            logger.error("❌ Exception in AuthTokenFilter: {}", e.getMessage(), e);
         }
 
         filterChain.doFilter(request, response);
