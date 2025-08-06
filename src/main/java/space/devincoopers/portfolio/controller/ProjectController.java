@@ -53,7 +53,7 @@ public class ProjectController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> createProject(
             @RequestPart("project") String projectJson,
-            @RequestPart("icon")MultipartFile icon,
+            @RequestPart(value = "icon", required = false)MultipartFile icon,
             @RequestPart("screenshots") MultipartFile[] screenshots) throws IOException {
 
         logger.debug("Did I make it in here");
