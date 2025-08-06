@@ -67,10 +67,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/projects/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                // Add API key filter before UsernamePasswordAuthenticationFilter
+
                 .addFilterBefore(apiKeyFilter, UsernamePasswordAuthenticationFilter.class)
-                // Add Auth token filter after API key filter
-                .addFilterAfter(authTokenFilter, ApiKeyFilter.class);
+                .addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class)
 
         return http.build();
     }
