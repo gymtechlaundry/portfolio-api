@@ -1,6 +1,8 @@
 package space.devincoopers.portfolio.service;
 
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import space.devincoopers.portfolio.client.CdnServiceClient;
@@ -14,6 +16,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ProjectService {
+    private static final Logger logger = LoggerFactory.getLogger(ProjectService.class);
 
     private final PortfolioMapper portfolioMapper;
     private final CdnServiceClient cdnServiceClient;
@@ -106,6 +109,7 @@ public class ProjectService {
         }
 
         if (existing.getScreenshots() != null) {
+            logger.debug("inside if existing screenshots");
             for (String path : existing.getScreenshots()) {
                 cdnServiceClient.deleteImage(APP_NAME, extractFilename(path));
             }
