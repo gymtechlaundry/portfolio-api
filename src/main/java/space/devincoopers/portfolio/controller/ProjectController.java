@@ -3,12 +3,14 @@ package space.devincoopers.portfolio.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import space.devincoopers.portfolio.client.CdnServiceClient;
 import space.devincoopers.portfolio.model.Project;
 import space.devincoopers.portfolio.service.ProjectService;
@@ -55,6 +57,14 @@ public class ProjectController {
             @RequestPart("project") String projectJson,
             @RequestPart(value = "icon", required = false)MultipartFile icon,
             @RequestPart(value = "screenshots", required = false) MultipartFile[] screenshots) throws IOException {
+
+        if (icon == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing required field: icon");
+        }
+
+        if (screenshots == null || screenshots.length == 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing required field: screenshots");
+        }
 
         logger.debug("Did I make it in here");
         Project project = objectMapper.readValue(projectJson, Project.class);
