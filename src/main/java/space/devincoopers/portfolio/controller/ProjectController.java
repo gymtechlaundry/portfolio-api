@@ -1,6 +1,8 @@
 package space.devincoopers.portfolio.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/projects")
 public class ProjectController {
+
+    private static final Logger logger = LoggerFactory.getLogger(ProjectController.class);
 
     private final ProjectService projectService;
     private final ObjectMapper objectMapper;
@@ -52,6 +56,7 @@ public class ProjectController {
             @RequestPart("icon")MultipartFile icon,
             @RequestPart("screenshots") MultipartFile[] screenshots) throws IOException {
 
+        logger.debug("Did I make it in here");
         Project project = objectMapper.readValue(projectJson, Project.class);
 
         projectService.createProjectWithUploads(project, icon, screenshots);
